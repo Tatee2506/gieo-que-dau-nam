@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gieo Quẻ Đầu Năm | Equality Club</title>
+  <style>
+    :root { --orange:#ff7a1a; --light:#fff; --soft:#fff4ec; --text:#333; }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
+    body{margin:0;background:linear-gradient(180deg,#fff,#fff7f1);color:var(--text);}    
+    .wrap{max-width:520px;margin:auto;min-height:100vh;padding:16px;display:flex;flex-direction:column;gap:12px;}
+    header{display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .logos{display:flex;gap:8px;}
+    .logo{width:28px;height:28px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;}
+    h1{color:var(--orange);margin:4px 0 0 0;}
+    .card{background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:16px;}
+    .input-row{display:flex;gap:8px;}
+    input{flex:1;padding:14px;border-radius:12px;border:1.5px solid #ffd1b3;font-size:16px;}
+    button{padding:14px 18px;border:none;border-radius:12px;background:var(--orange);color:#fff;font-weight:700;}
+    .result{margin-top:12px;display:none;}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--orange);font-weight:700;font-size:12px;}
+    .wish{font-size:18px;font-weight:700;margin:8px 0;}
+    .explain{opacity:.9;line-height:1.5;}
+    footer{margin-top:auto;text-align:center;opacity:.7;font-size:12px;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logos">
+        <div class="logo">L1</div><div class="logo">L2</div><div class="logo">L3</div><div class="logo">L4</div>
+      </div>
+      <h1>Gieo Quẻ Đầu Năm</h1>
+      <div>Equality Club</div>
+    </header>
+
+    <div class="card">
+      <div class="input-row">
+        <input id="num" type="number" min="1" max="50" placeholder="Nhập số từ 1–50" />
+        <button onclick="showWish()">Gieo quẻ</button>
+      </div>
+      <div id="result" class="result">
+        <span id="theme" class="tag"></span>
+        <div id="wish" class="wish"></div>
+        <div id="explain" class="explain"></div>
+      </div>
+    </div>
+
+    <footer>© Equality Club</footer>
+  </div>
+
+<script>
+// 6 CHỦ ĐỀ: Sức khỏe (1–8), Học vấn (9–16), Tình duyên (17–24), Gia đình (25–32), Tiền tài (33–41), Công việc (42–50)
+const data = {
+  // 1–8: SỨC KHỎE
+  1:{t:"Sức khỏe", w:"Thân an như gió sớm, lòng nhẹ tựa mây ngàn.", e:"Năm nay bạn nên ưu tiên nghỉ ngơi, ăn uống điều độ và vận động nhẹ nhàng để giữ tinh thần lẫn thể chất luôn cân bằng."},
+  2:{t:"Sức khỏe", w:"Mỗi bước nhỏ hôm nay, mai thành ngàn dặm mạnh.", e:"Kiên trì những thói quen tốt sẽ giúp bạn cải thiện sức khỏe lâu dài, đừng nóng vội."},
+  3:{t:"Sức khỏe", w:"Hơi thở sâu, lòng bình yên nở hoa.", e:"Thiền, đi bộ, hoặc hít thở sâu sẽ giúp bạn giải tỏa căng thẳng rất tốt."},
+  4:{t:"Sức khỏe", w:"Ngủ đủ giấc, mộng lành gõ cửa.", e:"Giấc ngủ là chìa khóa cho trí nhớ và năng lượng, hãy trân trọng nó."},
+  5:{t:"Sức khỏe", w:"Ăn uống điều hòa, thân tâm sáng tỏ.", e:"Ăn đủ chất và đúng giờ giúp bạn duy trì sự tỉnh táo và tập trung."},
+  6:{t:"Sức khỏe", w:"Cười nhiều một chút, nắng lên trong tim.", e:"Tinh thần tích cực có tác dụng chữa lành rất lớn."},
+  7:{t:"Sức khỏe", w:"Vận động nhẹ, khí huyết hanh thông.", e:"Tập luyện vừa sức giúp bạn tránh mệt mỏi kéo dài."},
+  8:{t:"Sức khỏe", w:"Thân khỏe là gốc của mọi ước mơ.", e:"Khi bạn khỏe mạnh, mọi kế hoạch đều trở nên khả thi hơn."},
+
+  // 9–16: HỌC VẤN
+  9:{t:"Học vấn", w:"Trang sách mở, chân trời rộng.", e:"Năm nay rất thuận lợi để bạn học thêm kỹ năng mới."},
+ 10:{t:"Học vấn", w:"Chậm mà chắc, chữ hóa ngọc.", e:"Đừng so sánh bản thân với người khác, tiến bộ từng ngày là đủ."},
+ 11:{t:"Học vấn", w:"Một giờ học sâu, bằng mười giờ lướt.", e:"Tập trung chất lượng hơn số lượng."},
+ 12:{t:"Học vấn", w:"Hỏi nhiều, hiểu sâu.", e:"Đừng ngại đặt câu hỏi, đó là dấu hiệu của người học tốt."},
+ 13:{t:"Học vấn", w:"Sai để đúng, vấp để bay.", e:"Thất bại là bước đệm của thành công."},
+ 14:{t:"Học vấn", w:"Kiến thức là đèn, soi lối dài lâu.", e:"Đầu tư cho việc học luôn là khoản đầu tư lời nhất."},
+ 15:{t:"Học vấn", w:"Mỗi ngày một chút, núi cũng mòn.", e:"Sự bền bỉ sẽ đưa bạn đến kết quả bất ngờ."},
+ 16:{t:"Học vấn", w:"Học không chỉ để biết, mà để sống.", e:"Hãy áp dụng kiến thức vào thực tế."},
+
+  // 17–24: TÌNH DUYÊN
+ 17:{t:"Tình duyên", w:"Gặp người đúng lúc, hoa nở đúng mùa.", e:"Mối quan hệ của bạn có thể tiến triển tự nhiên, không cần gấp."},
+ 18:{t:"Tình duyên", w:"Yêu thương là học cách lắng nghe.", e:"Sự thấu hiểu quan trọng hơn lời hứa."},
+ 19:{t:"Tình duyên", w:"Chậm mà sâu, bền mà lâu.", e:"Đừng vội vàng trong cảm xúc."},
+ 20:{t:"Tình duyên", w:"Gặp nhau là duyên, giữ nhau là phúc.", e:"Hãy trân trọng người bên cạnh."},
+ 21:{t:"Tình duyên", w:"Một lời ấm, đông cũng hóa xuân.", e:"Lời nói yêu thương có sức mạnh lớn."},
+ 22:{t:"Tình duyên", w:"Thương mình trước, mới thương người.", e:"Tự yêu bản thân giúp bạn có mối quan hệ lành mạnh."},
+ 23:{t:"Tình duyên", w:"Gió nhẹ qua tim, nắng đọng trong lòng.", e:"Cảm xúc tích cực sẽ đến với bạn."},
+ 24:{t:"Tình duyên", w:"Hạnh phúc là sẻ chia, không phải chiếm hữu.", e:"Tôn trọng không gian riêng của nhau."},
+
+  // 25–32: GIA ĐÌNH
+ 25:{t:"Gia đình", w:"Nhà là nơi tim được nghỉ.", e:"Gia đình là điểm tựa tinh thần quan trọng."},
+ 26:{t:"Gia đình", w:"Một bữa cơm, ngàn yêu thương.", e:"Dành thời gian cho gia đình nhiều hơn."},
+ 27:{t:"Gia đình", w:"Nói ít giận, cười nhiều thương.", e:"Sự bao dung giúp không khí gia đình ấm áp."},
+ 28:{t:"Gia đình", w:"Chia sẻ nhỏ, hạnh phúc to.", e:"Quan tâm từ những điều nhỏ nhất."},
+ 29:{t:"Gia đình", w:"Bình yên là khi có người chờ.", e:"Hãy trân trọng khoảnh khắc bên người thân."},
+ 30:{t:"Gia đình", w:"Mái nhà ấm, lòng chẳng lạnh.", e:"Sự gắn kết giúp bạn vượt qua khó khăn."},
+ 31:{t:"Gia đình", w:"Một lời hỏi han, vạn an lòng.", e:"Đừng quên hỏi thăm người thân."},
+ 32:{t:"Gia đình", w:"Thương nhau từ điều nhỏ.", e:"Hạnh phúc đến từ những điều giản dị."},
+
+  // 33–41: TIỀN TÀI
+ 33:{t:"Tiền tài", w:"Gieo chăm chỉ, gặt an tâm.", e:"Nỗ lực sẽ mang lại thành quả."},
+ 34:{t:"Tiền tài", w:"Chi tiêu khéo, dư dả lâu.", e:"Quản lý tài chính giúp bạn an tâm."},
+ 35:{t:"Tiền tài", w:"Ít mà bền, hơn nhiều mà vỡ.", e:"Đầu tư cẩn trọng."},
+ 36:{t:"Tiền tài", w:"Có kế hoạch, tiền ở lại.", e:"Lập ngân sách là cần thiết."},
+ 37:{t:"Tiền tài", w:"Tiết kiệm hôm nay, an nhàn mai sau.", e:"Hãy để dành cho tương lai."},
+ 38:{t:"Tiền tài", w:"Giá trị hơn giá cả.", e:"Đừng mua vì phong trào."},
+ 39:{t:"Tiền tài", w:"Biết đủ là giàu.", e:"Hài lòng với những gì đang có."},
+ 40:{t:"Tiền tài", w:"Đồng tiền đi đúng chỗ.", e:"Chi tiêu cho học tập và sức khỏe."},
+ 41:{t:"Tiền tài", w:"Nhỏ góp thành to.", e:"Mỗi khoản nhỏ đều quan trọng."},
+
+  // 42–50: CÔNG VIỆC
+ 42:{t:"Công việc", w:"Bắt đầu nhỏ, mơ ước lớn.", e:"Đừng ngại khởi đầu từ những việc giản đơn."},
+ 43:{t:"Công việc", w:"Làm hết mình, trời chẳng phụ.", e:"Sự chăm chỉ sẽ được ghi nhận."},
+ 44:{t:"Công việc", w:"Học trong làm, lớn trong khó.", e:"Khó khăn giúp bạn trưởng thành."},
+ 45:{t:"Công việc", w:"Chậm mà vững.", e:"Đừng nóng vội trong sự nghiệp."},
+ 46:{t:"Công việc", w:"Đồng đội là sức mạnh.", e:"Học cách hợp tác."},
+ 47:{t:"Công việc", w:"Sai hôm nay, giỏi ngày mai.", e:"Sai lầm là bài học."},
+ 48:{t:"Công việc", w:"Tận tâm thì thành công.", e:"Tinh thần trách nhiệm rất quan trọng."},
+ 49:{t:"Công việc", w:"Biết mình muốn gì.", e:"Xác định rõ mục tiêu."},
+ 50:{t:"Công việc", w:"Bền bỉ sẽ tới đích.", e:"Không bỏ cuộc giữa chừng."}
+};
+
+function showWish(){
+  const n = Number(document.getElementById('num').value);
+  const res = document.getElementById('result');
+  if(!data[n]){ alert('Vui lòng nhập số từ 1 đến 50'); return; }
+  document.getElementById('theme').innerText = data[n].t;
+  document.getElementById('wish').innerText = data[n].w;
+  document.getElementById('explain').innerText = data[n].e;
+  res.style.display = 'block';
+}
+</script>
+</body>
+</html>
